@@ -1,0 +1,8 @@
+<RCC>
+	<qresource>
+		<file alias = 'add.png'>/image/add.png</file>
+		<file alias = 'functions.png'>/image/functions.png</file>
+		<file alias = 'model.png'>/image/model.png</file>
+		<file alias = 'sub.png'>/image/sub.png</file>
+	</qresource>
+</RCC>
