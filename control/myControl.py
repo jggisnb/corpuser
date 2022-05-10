@@ -9,6 +9,7 @@ class myLineEdit(QLineEdit):
         super(myLineEdit, self).__init__()
         self.setAcceptDrops(True)  # 设置接受拖放动作
         self.setAttribute(Qt.WA_StyledBackground)
+        self.setReadOnly(True)
 
     def dragEnterEvent(self, e):
         if e.mimeData().text():  # 如果是.srt结尾的路径接受

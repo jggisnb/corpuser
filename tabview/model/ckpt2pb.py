@@ -140,7 +140,7 @@ class view(model_pkg_base_view):
 
         label = QLabel(u"checkpoint路径 ")
         self.model_path = myLineEdit()
-        self.model_path.setPlaceholderText(u"将checkpoint目录文件夹拖拽至输入框或者输入路径。(必填)")
+        self.model_path.setPlaceholderText(u"将checkpoint目录文件夹拖拽至输入框。(必填)")
         label0 = QLabel(u"ckpt类型")
         self.modelBox = QComboBox()
         self.modelBox.addItems(["tf2","pytorch"])
@@ -155,7 +155,7 @@ class view(model_pkg_base_view):
         layout02 = QHBoxLayout()
         label1 = QLabel(u"预训练模型路径 ")
         self.premodel_path = myLineEdit()
-        self.premodel_path.setPlaceholderText(u"将预训练模型文件夹拖拽至输入框或者输入路径,也可以选择右侧提供的可选项。(可选)")
+        self.premodel_path.setPlaceholderText(u"将预训练模型文件夹拖拽至输入框,也可以选择右侧提供的可选项。(可选)")
         self.premodelBox = QComboBox()
         self.premodelBox.addItems(["bert-base-chinese","albert-tiny-chinese"])
         layout02.addWidget(label1)
@@ -166,13 +166,13 @@ class view(model_pkg_base_view):
         label2 = QLabel(u"keras模型py    ")
         self.kerasmodel_path = myLineEdit()
         self.kerasmodel_path.drop_sgl.connect(self.__read_kerasmodel)
-        self.kerasmodel_path.setPlaceholderText(u"将模型的py文件拖拽至输入框或者输入路径,py文件的初始化函数中要有且仅有包含一个参数:预训练模型路径,例如\"__init__(self,premodel=None):\"(必填)")
+        self.kerasmodel_path.setPlaceholderText(u"将模型的py文件拖拽至输入框,py文件的初始化函数中要有且仅有包含一个参数:预训练模型路径,例如\"__init__(self,premodel=None):\"(必填)")
         layout03.addWidget(label2)
         layout03.addWidget(self.kerasmodel_path)
 
         layout04 = QHBoxLayout()
         label3 = QLabel(u"checkpoint name")
-        self.ckptname_edit = myLineEdit()
+        self.ckptname_edit = QLineEdit()
         self.ckptname_edit.setPlaceholderText(u"checkpoint成员变量名,默认:ner_model(可选)")
         layout04.addWidget(label3)
         layout04.addWidget(self.ckptname_edit)
@@ -181,7 +181,7 @@ class view(model_pkg_base_view):
         layout05 = QHBoxLayout()
         label4 = QLabel(u"pb导出路径     ")
         self.export_edit = myLineEdit()
-        self.export_edit.setPlaceholderText(u"将导出文件夹拖拽至此处或者输入路径,也可以不填,默认为checkpoint路径同级目录下导出。(可选)")
+        self.export_edit.setPlaceholderText(u"将导出文件夹拖拽至此处,也可以不填,默认为checkpoint路径同级目录下导出。(可选)")
         layout05.addWidget(label4)
         layout05.addWidget(self.export_edit)
 
@@ -240,7 +240,7 @@ class view(model_pkg_base_view):
         self.testView = self.view("模型测试",200)
         label = QLabel(u"pb路径  ")
         self.test_model_path = myLineEdit()
-        self.test_model_path.setPlaceholderText(u"将模型目录文件夹拖拽至此处或直接输入路径")
+        self.test_model_path.setPlaceholderText(u"将模型目录文件夹拖拽至此处。")
         label0 = QLabel(u"最大长度")
         self.maxLengthBox = QSpinBox()
         self.maxLengthBox.setMaximum(999)
@@ -486,9 +486,9 @@ class view(model_pkg_base_view):
         try:
             self.__message = message
             if message == "ckpt2pb":
-                self.textBrowser.setText(u"<p style='color:#6495ED;font-weight:bold;font-size:15px'>ckpt转化pb:</p>")
+                self.textBrowser.setText(u"<p style='color:#6495ED;font-weight:bold;font-size:14px'>ckpt转化pb:</p>")
             elif message == "pbTest":
-                self.textBrowser.setText(u"<p style='color:#6495ED;font-weight:bold;font-size:15px'>pb模型测试:</p>")
+                self.textBrowser.setText(u"<p style='color:#6495ED;font-weight:bold;font-size:14px'>pb模型测试:</p>")
 
             self.process = QtCore.QProcess()
             self.process.readyReadStandardError.connect(self.onReadyReadStandardError)

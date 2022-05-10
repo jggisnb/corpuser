@@ -6,6 +6,8 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QAction, QTreeWidget, QTabWidget, QSplitter, QHBoxLayout, QWidget, \
     QTreeWidgetItem
 from source import image
+from tabview.baseSplitter import splitter
+
 
 class myTreeWidgetItem(QTreeWidgetItem):
     def __init__(self,**kwargs):
@@ -64,7 +66,7 @@ class MainWindow(QMainWindow):
         mainView = QWidget()
         self.setCentralWidget(mainView)
 
-        splitterHorizontal = QSplitter(Qt.Horizontal)
+        splitterHorizontal = splitter(Qt.Horizontal)
         tabWidget = self.__init_tabWidget()
         treeWidget = self.__init_treeWidget()
         splitterHorizontal.insertWidget(0, treeWidget)

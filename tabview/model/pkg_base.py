@@ -1,5 +1,7 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QScrollArea, QSplitter, QHBoxLayout, QTextBrowser, QWidget
+
+from .. import baseSplitter
 from ..base import view as baseView
 
 class model_pkg_base_view(baseView):
@@ -22,7 +24,7 @@ class model_pkg_base_view(baseView):
             background-color: #3c3f41;
         """)
 
-        self.splitter = QSplitter(Qt.Vertical)
+        self.splitter = baseSplitter.splitter(Qt.Vertical)
         self.splitter.insertWidget(0, self.scrollArea)
         self.splitter.insertWidget(1, self.textBrowser)
         self.splitter.setStretchFactor(0, 2)
