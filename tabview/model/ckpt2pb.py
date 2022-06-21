@@ -1,4 +1,5 @@
 import re
+import shutil
 import sys
 import typing
 from PyQt5 import QtCore, QtGui
@@ -10,12 +11,92 @@ from control.myControl import myLineEdit
 from PyQt5.QtWidgets import QLabel, QComboBox, QLineEdit, QPushButton, QHBoxLayout, \
     QVBoxLayout, QWidget, QFrame, QTextEdit, QMessageBox, QSpinBox
 from typing import List
-
-from .pkg_base import model_pkg_base_view
+from ..base import pkg_base_view
+from ..layout import shapeLayout
 from ..thread import uiThread
+from ..someview import frameview
 
 
-class view(model_pkg_base_view):
+class fview(frameview):
+    def __init__(self, title, maxheight):
+        super(fview, self).__init__()
+        self.title = QLabel(title)
+        self.vlayout = QVBoxLayout()
+        layout0 = QHBoxLayout()
+        layout0.addStretch(1)
+        layout0.addWidget(self.title)
+        layout0.addStretch(1)
+        self.vlayout.addLayout(layout0)
+        self.setLayout(self.vlayout)
+        self.setMaximumHeight(maxheight)
+
+    def addlayout(self, layout):
+        self.vlayout.addLayout(layout)
+        self.vlayout.addStretch(0)
+
+class shapeView(frameview):
+    def __init__(self,count):
+        super(shapeView, self).__init__()
+        self.count = count
+
+        self.setAutoFillBackground(True)
+        layout = QVBoxLayout()
+        _layout0 = QHBoxLayout()
+        _layout1 = QHBoxLayout()
+
+        label0 = QLabel("shape")
+        label0.setStyleSheet("font-size: 11px;")
+        self.shape_edit = QLineEdit()
+        reg = QRegExp("[,\d]+")
+        self.shape_edit.setPlaceholderText(u"格式:[0-9]+,")
+        pValidator = QRegExpValidator(self.shape_edit)
+        pValidator.setRegExp(reg)
+        self.shape_edit.setValidator(pValidator)
+
+        self.typebox = QComboBox()
+        self.typebox.addItems(["int16", "int32", "int64", "int8", "float16", "float32", "float64",
+                               "bfloat16", "double", "bool", "complex128", "complex64", "half",
+                               "qint16", "qint32", "qint8", "quint16", "quint8", "resource",
+                               "string", "uint16", "uint32", "uint64", "uint8", "variant"])
+
+        _layout0.addWidget(label0)
+        _layout0.addWidget(self.shape_edit)
+        _layout0.addWidget(self.typebox)
+        _layout0.addStretch(0)
+
+        label1 = QLabel("name ")
+        label1.setStyleSheet("font-size: 11px;")
+        self.name_edit = QLineEdit()
+        self.name_edit.setPlaceholderText(f"param{count}")
+        _layout1.addWidget(label1)
+        _layout1.addWidget(self.name_edit)
+        _layout1.addStretch(0)
+        layout.addLayout(_layout1)
+        layout.addLayout(_layout0)
+        self.setLayout(layout)
+
+    def type(self):
+        return self.typebox.currentText()
+
+    def name(self):
+        name = self.name_edit.text()
+        if not len(name):
+            name = f"param{self.count}"
+        return name
+
+    def shape(self):
+        shape_edit = self.shape_edit.text()
+        if len(shape_edit):
+            shape_edit = shape_edit.split(",")
+            while "" in shape_edit:shape_edit.remove("")
+            for i in range(len(shape_edit)):
+                shape_edit[i] = shape_edit[i]
+            return shape_edit
+        else:
+            return None
+
+
+class view(pkg_base_view):
     def __init__(self,*args,**kwargs):
         super(view, self).__init__(*args,**kwargs)
         self.__init_ui()
@@ -26,117 +107,8 @@ class view(model_pkg_base_view):
             self.name = name
             self.type = type_
 
-    class shapeView(QWidget):
-        def __init__(self,count):
-            super(QWidget, self).__init__()
-            self.count = count
-            self.__frame = QFrame(self)
-            self.__frame.setFrameShape(QFrame.Box)
-            self.__frame.setFrameShadow(QFrame.Raised)
-
-            self.setAutoFillBackground(True)
-            layout = QVBoxLayout()
-            _layout0 = QHBoxLayout()
-            _layout1 = QHBoxLayout()
-
-            label0 = QLabel("shape")
-            label0.setStyleSheet("font-size: 11px;")
-            self.shape_edit = QLineEdit()
-            reg = QRegExp("[,\d]+")
-            self.shape_edit.setPlaceholderText(u"格式:[0-9]+,")
-            pValidator = QRegExpValidator(self.shape_edit)
-            pValidator.setRegExp(reg)
-            self.shape_edit.setValidator(pValidator)
-
-            self.typebox = QComboBox()
-            self.typebox.addItems(["int16", "int32", "int64", "int8", "float16", "float32", "float64",
-                                   "bfloat16", "double", "bool", "complex128", "complex64", "half",
-                                   "qint16", "qint32", "qint8", "quint16", "quint8", "resource",
-                                   "string", "uint16", "uint32", "uint64", "uint8", "variant"])
-
-            _layout0.addWidget(label0)
-            _layout0.addWidget(self.shape_edit)
-            _layout0.addWidget(self.typebox)
-            _layout0.addStretch(0)
-
-            label1 = QLabel("name ")
-            label1.setStyleSheet("font-size: 11px;")
-            self.name_edit = QLineEdit()
-            self.name_edit.setPlaceholderText(f"param{count}")
-            _layout1.addWidget(label1)
-            _layout1.addWidget(self.name_edit)
-            _layout1.addStretch(0)
-            layout.addLayout(_layout1)
-            layout.addLayout(_layout0)
-            self.setLayout(layout)
-
-        def type(self):
-            return self.typebox.currentText()
-
-        def name(self):
-            name = self.name_edit.text()
-            if not len(name):
-                name = f"param{self.count}"
-            return name
-
-        def shape(self):
-            shape_edit = self.shape_edit.text()
-            if len(shape_edit):
-                shape_edit = shape_edit.split(",")
-                while "" in shape_edit:shape_edit.remove("")
-                for i in range(len(shape_edit)):
-                    shape_edit[i] = shape_edit[i]
-                return shape_edit
-            else:
-                return None
-
-        def resizeEvent(self, a0: QtGui.QResizeEvent) -> None:
-            self.__frame.resize(a0.size())
-
-    class view(QWidget):
-        def __init__(self,title,maxheight):
-            super(QWidget, self).__init__()
-            self.title = QLabel(title)
-            self.vlayout = QVBoxLayout()
-            layout0 = QHBoxLayout()
-            layout0.addStretch(1)
-            layout0.addWidget(self.title)
-            layout0.addStretch(1)
-            self.vlayout.addLayout(layout0)
-            self.setLayout(self.vlayout)
-            self.__frame = QFrame(self)
-            self.__frame.setFrameShape(QFrame.Box)
-            self.__frame.setFrameShadow(QFrame.Raised)
-            self.setMaximumHeight(maxheight)
-
-        def addlayout(self,layout):
-            self.vlayout.addLayout(layout)
-            self.vlayout.addStretch(0)
-
-        def resizeEvent(self, a0: QtGui.QResizeEvent) -> None:
-            self.__frame.resize(a0.size())
-
-    class shapeLayout(QHBoxLayout):
-        def __init__(self,*args,**kwargs):
-            super(QHBoxLayout, self).__init__(*args,**kwargs)
-            self.shapeViews = []
-
-        def addWidget(self, a0: QWidget, stretch: int = ..., alignment: typing.Union[QtCore.Qt.Alignment, QtCore.Qt.AlignmentFlag] = ...) -> None:
-            super(QHBoxLayout, self).addWidget(a0)
-            self.shapeViews.append(a0)
-
-        def getLen(self):
-            return len(self.shapeViews)
-
-        def deleteWidget(self):
-            if self.getLen() > 0:
-                lastWidget = self.shapeViews[-1]
-                lastWidget.deleteLater()
-                self.shapeViews.pop(-1)
-                del lastWidget
-
     def __init_ui(self):
-        self.transforView = self.view("模型转换",250)
+        self.transforView = fview("模型转换",250)
 
         label = QLabel(u"checkpoint路径 ")
         self.model_path = myLineEdit()
@@ -165,7 +137,7 @@ class view(model_pkg_base_view):
         layout03 = QHBoxLayout()
         label2 = QLabel(u"keras模型py    ")
         self.kerasmodel_path = myLineEdit()
-        self.kerasmodel_path.drop_sgl.connect(self.__read_kerasmodel)
+        self.kerasmodel_path.drop_emit.connect(self.__read_kerasmodel)
         self.kerasmodel_path.setPlaceholderText(u"将模型的py文件拖拽至输入框,py文件的初始化函数中要有且仅有包含一个参数:预训练模型路径,例如\"__init__(self,premodel=None):\"(必填)")
         layout03.addWidget(label2)
         layout03.addWidget(self.kerasmodel_path)
@@ -193,8 +165,8 @@ class view(model_pkg_base_view):
 
         layout1 = QHBoxLayout()
 
-        self.input_layout = self.shapeLayout()
-        self.input_layout.addWidget(self.shapeView(0))
+        self.input_layout = shapeLayout()
+        self.input_layout.addWidget(shapeView(0))
 
         layout11 = QHBoxLayout()
         self.input_addBtn = QPushButton()
@@ -237,7 +209,7 @@ class view(model_pkg_base_view):
         layout3.addStretch(0)
         self.transforView.addlayout(layout3)
 
-        self.testView = self.view("模型测试",200)
+        self.testView = fview("模型测试",200)
         label = QLabel(u"pb路径  ")
         self.test_model_path = myLineEdit()
         self.test_model_path.setPlaceholderText(u"将模型目录文件夹拖拽至此处。")
@@ -281,6 +253,8 @@ class view(model_pkg_base_view):
 
         self.contentView.setLayout(layout)
         self.setup_ui()
+        self.textBrowser.setMinimumHeight(225)
+
 
     # -------------------kerasmodel pre fix-------------------#
     def __read_kerasmodel(self,kerasmodel_path:str):
@@ -297,11 +271,11 @@ class view(model_pkg_base_view):
                         ln = self.input_layout.getLen()
                         for i,pm in enumerate(params):
                             if i+1 <= ln:
-                                shapeview = self.input_layout.shapeViews[i]
+                                shapeview = self.input_layout.items[i]
                                 shapeview.name_edit.setText(pm.strip())
                             else:
                                 self.__add_inputShape_sgl()
-                                shapeview = self.input_layout.shapeViews[-1]
+                                shapeview = self.input_layout.items[-1]
                                 shapeview.name_edit.setText(pm.strip())
                     else:
                         return
@@ -310,7 +284,7 @@ class view(model_pkg_base_view):
 
     #-------------------sub/add shapeView-------------------#
     def __add_inputShape_sgl(self):
-        self.input_layout.addWidget(self.shapeView(self.input_layout.getLen()))
+        self.input_layout.addWidget(shapeView(self.input_layout.getLen()))
 
     def __sub_inputShape_sgl(self):
         if self.input_layout.getLen() > 1:
@@ -330,7 +304,7 @@ class view(model_pkg_base_view):
         self.__inhibit_control()
         try:
             self.pbTest_thread = uiThread()
-            self.pbTest_thread.task_sgl.connect(self.__pbTest)
+            self.pbTest_thread.task_no_args_emit.connect(self.__pbTest)
             self.pbTest_thread.start()
         except Exception as e:
             return QMessageBox.critical(self, "错误", f"{str(e)}")
@@ -341,6 +315,7 @@ class view(model_pkg_base_view):
         if type(data) == tuple:
             test_file, pythonexe = data
             self.__cmdProcess(f'{pythonexe} {test_file}',"pbTest")
+            self._pythonfile = test_file
 
     def __pre_pbTest(self):
         pwd = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -398,7 +373,7 @@ class view(model_pkg_base_view):
         self.__inhibit_control()
         try:
             self.ckpt2pb_thread = uiThread()
-            self.ckpt2pb_thread.task_sgl.connect(self.__ckpt2pb)
+            self.ckpt2pb_thread.task_no_args_emit.connect(self.__ckpt2pb)
             self.ckpt2pb_thread.start()
         except Exception as e:
             return QMessageBox.critical(self, "错误", f"{str(e)}")
@@ -409,6 +384,7 @@ class view(model_pkg_base_view):
         if type(data)==tuple:
             transform_file, pythonexe = data
             self.__cmdProcess(f'{pythonexe} {transform_file}',"ckpt2pb")
+            self._pythonfile = transform_file
 
     def __pre_ckpt2pb(self):
         pwd = os.path.dirname(os.path.realpath(sys.argv[0]))
@@ -440,7 +416,7 @@ class view(model_pkg_base_view):
         else:
             self.__export_edit =  os.path.join(os.path.dirname(modelpath),f"pb{os.path.basename(modelpath)}{t1}")
 
-        shapeViews = self.input_layout.shapeViews
+        shapeViews = self.input_layout.items
         models = []
         for shapeView in shapeViews:
             shape = shapeView.shape()
@@ -489,7 +465,7 @@ class view(model_pkg_base_view):
                 self.textBrowser.setText(u"<p style='color:#6495ED;font-weight:bold;font-size:14px'>ckpt转化pb:</p>")
             elif message == "pbTest":
                 self.textBrowser.setText(u"<p style='color:#6495ED;font-weight:bold;font-size:14px'>pb模型测试:</p>")
-
+        
             self.process = QtCore.QProcess()
             self.process.readyReadStandardError.connect(self.onReadyReadStandardError)
             self.process.readyReadStandardOutput.connect(self.onReadyReadStandardOutput)
@@ -507,7 +483,9 @@ class view(model_pkg_base_view):
         self.addLog(result,1)
 
     def onFinished(self,p_int, QProcess_ExitStatus):
+
         print(p_int,QProcess_ExitStatus)
+
         if p_int == 0:
             if self.__message == "ckpt2pb":
                 self.addLog(f"转换完成,导出路径:{self.__export_edit}", 1)
@@ -519,7 +497,14 @@ class view(model_pkg_base_view):
             elif self.__message == "pbTest":
                 self.addLog(f"模型不可用!", 0)
 
+        if hasattr(self,"_pythonfile") and os.path.exists(self._pythonfile):
+            os.remove(self._pythonfile)
 
+    def addLog(self,log,flag):
+        if flag == 1:
+            self.textBrowser.append(f"<p style='color:#65CB64;font-size:14px;'>{log}</p>")
+        else:
+            self.textBrowser.append(f"<p style='color:#D7686D;font-size:14px;'>{log}</p>")
 
 
 
