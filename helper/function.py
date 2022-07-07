@@ -1,6 +1,20 @@
 
 import random
 
+
+def rawgencount(filename):
+    def _make_gen(reader):
+        b = reader(1024 * 1024)
+        a = b.decode()
+        while b:
+            yield b
+            b = reader(1024 * 1024)
+    f = open(filename, 'rb')
+    f_gen = _make_gen(f.raw.read)
+    result = sum(buf.count(b'</p>') for buf in f_gen)
+    f.close()
+    return result
+
 def random_d():
     return str(random.randint(0,9))
 

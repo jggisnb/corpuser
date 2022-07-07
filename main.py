@@ -33,7 +33,7 @@ if __name__ == "__main__":
     checked = __check_update()
     if checked:
         url, pwd, version = checked
-        dialog = update_dialog(url, pwd, version)
+        dialog = update_dialog(url, pwd, version,os.getpid())
         dialog.setGeometry(100, 50, 400, 100)
         dialog.setWindowTitle("更新程序")
         # dialog.close_emit.connect(__dialog_close_sgl)

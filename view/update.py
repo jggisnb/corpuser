@@ -41,8 +41,9 @@ class downloadThread(QThread):
 
 class dialog(QDialog):
     # close_emit = pyqtSignal()
-    def __init__(self,url,pwd,version):
+    def __init__(self,url,pwd,version,pid):
         super(dialog, self).__init__()
+        self.__main_pid = pid
         layout = QVBoxLayout(self)
         layout1 = QHBoxLayout(self)
         self.progressBar = QProgressBar(self)
@@ -72,7 +73,7 @@ class dialog(QDialog):
         if value == 100:
             self.message_label.setText("下载完成,开始解压文件")
             self.close()
-            os.system(f"{os.path.join(self.pwd,'update.exe')} {os.getpid()} {self.the_filepath}")
+            os.system(f"{os.path.join(self.pwd,'update.exe')} {self.__main_pid} {self.the_filepath}")
             # self.window.setGeometry(100, 50, 1350, 800)
             # self.window.setWindowTitle("nlp tools")
             # self.window.show()
