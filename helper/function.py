@@ -1,5 +1,24 @@
 
 import random
+from ctypes import windll
+import time
+# import win32file
+# from  win32file import  *
+
+# def is_open(filename):
+#     try:
+#         # 首先获得句柄
+#         vHandle = win32file.CreateFile(filename, GENERIC_READ, 0, None, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, None)
+#         # 判断句柄是否等于INVALID_HANDLE_VALUE
+#         if int(vHandle) == INVALID_HANDLE_VALUE:
+#             print("# file is already open")
+#             return True  # file is already open
+#         win32file.CloseHandle(vHandle)
+#         return False
+#     except Exception as e:
+#         print(e)
+#         return True
+
 
 
 def rawgencount(filename):

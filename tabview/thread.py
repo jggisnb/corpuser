@@ -20,4 +20,4 @@ class uiThread_mode2(QThread):
         self.args = args
 
     def run(self):
-        self.func(*self.args)
+        self.func(*self.args if self.args else [])

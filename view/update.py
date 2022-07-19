@@ -63,7 +63,7 @@ class dialog(QDialog):
         self.downloadThread.download_proess_signal.connect(self.set_progressbar_value)
         self.downloadThread.start()
         self.show()
-        self.window = MainWindow()
+        # self.window = MainWindow()
 
     # 设置进度条
     def set_progressbar_value(self, value):

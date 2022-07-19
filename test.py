@@ -1,6 +1,25 @@
-from helper.function import rawgencount
+from PyQt5.QtCore import QThread
 
-print(rawgencount(r"d:\Users\Administrator\Desktop\aaa\wrong\wechatexport\export1656992810.txt"))
+
+class uiThread_mode2(QThread):
+    def __init__(self, func, args=None):
+        super(uiThread_mode2, self).__init__()
+        self.func = func
+        self.args = args
+
+    def run(self):
+        self.func(*self.args)
+
+
+def passd(*args):
+    print(1)
+
+
+passd(*[None])
+
+# from helper.function import rawgencount
+#
+# print(rawgencount(r"d:\Users\Administrator\Desktop\aaa\wrong\wechatexport\export1656992810.txt"))
 
 # a = '''
 # 不动产权证号为：

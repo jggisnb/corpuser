@@ -6,7 +6,7 @@ if __name__ == "__main__":
     import sys
     pid,zip_path = sys.argv[1:3]
     try:
-        subprocess.Popen('taskkill /f /im nlptools.exe', shell=False)
+        subprocess.Popen('taskkill /f /im nlp_tools.exe', shell=False)
     except Exception as e:
         print(e)
     import time
@@ -28,4 +28,4 @@ if __name__ == "__main__":
         print(f"解压进度：{int(float(now_size/all_size)*100)}/100")
     file_list.close()
     os.remove(zip_path)
-    subprocess.Popen("nlptools.exe", shell=False)
+    subprocess.Popen("nlp_tools.exe", shell=False)
