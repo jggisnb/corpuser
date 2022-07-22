@@ -2,6 +2,18 @@
 ```
 功能包括 语料标注工具、tensorflow2模型转换工具、excel辅助工具，目前语料标注工具比较成熟，暂时只提供语料标注工具的使用教程。
 ```
+### 启动
+
+* 使用python解释器启动
+    ```
+    pip install -r requirements.txt
+    python main.py
+    ```
+* 使用exe 启动
+    ```
+    <your folder>/corpuser/dist/v1/nlp_tools.exe
+    ```
+
 ### 语料标注工具
 ![IMAGE](https://raw.githubusercontent.com/jggisnb/project_images/main/corpuser/md_image/instruction.png)
 
@@ -139,6 +151,7 @@
     b.当前语料不会被
     ```
     * 跳过log
+    
     ![IMAGE](https://raw.githubusercontent.com/jggisnb/project_images/main/corpuser/md_image/skip_log.png)
 * `标记14`  隐名替换(包含隐名的标注)  
     ```
