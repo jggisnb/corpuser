@@ -89,20 +89,21 @@ class MainWindow(QMainWindow):
         from tabview.corpus.regularity import view as crview
         from tabview.corpus.randomCorpus import view as rcview
         from tabview.corpus.mark import view as mview
-        # from tabview.model.ckpt2pb import view as cpview
-        # from tabview.model.pb2onnx import view as pnview
+        from tabview.model.ckpt2pb import view as cpview
+        from tabview.model.pb2onnx import view as pnview
         from tabview.jige.excel_tool import view as jetview
         self.treeWidget = QTreeWidget()
         self.treeWidget.setHeaderLabel("功能大全")
         group_set = {
+            u"语料": {
+                u"cells": {u"语料乱序": rcview, u"语料标注工具": mview, u"基于正则语料生成": crview, u"语料纠错": ccview},
+                u"icon": ":/functions.png"
+            },
             u"小工具": {
                 u"cells": {u"excel映射生成": jetview},
                 u"icon": ":/functions.png"
             },
-            u"语料": {
-                u"cells": {u"语料乱序": rcview,u"语料标注工具": mview,u"基于正则语料生成": crview, u"语料纠错": ccview},
-                u"icon": ":/functions.png"
-            },
+
             # u"模型": {
             #     u"cells": {u"ckpt转pb": cpview,u"pb转onnx": pnview},
             #     u"icon": ":/model.png"
